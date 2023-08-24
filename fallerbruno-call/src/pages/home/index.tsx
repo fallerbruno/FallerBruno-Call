@@ -1,9 +1,9 @@
-import { Heading, Text } from "@faller-bruno-ui/react";
-import Image from "next/image";
-import { Container, Hero, Preview } from "./styles";
+import { Heading, Text } from '@faller-bruno-ui/react'
+import Image from 'next/image'
+import { Container, Hero, Preview } from './styles'
 
-import previewImage from "../../assets/app-preview.png";
-import { ClaimUserNameForm } from "./components/ClaimUserNameForm";
+import previewImage from '../../assets/app-preview.png'
+import { ClaimUserNameForm } from './components/ClaimUserNameForm'
 
 export default function Home() {
   return (
@@ -30,5 +30,5 @@ export default function Home() {
         />
       </Preview>
     </Container>
-  );
+  )
 }

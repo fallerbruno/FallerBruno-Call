@@ -1,15 +1,19 @@
-import { globalStyles } from "@/styles/global";
-import type { AppProps } from "next/app";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import type { AppProps } from 'next/app'
+import { ToastContainer } from 'react-toastify'
+import { SessionProvider } from 'next-auth/react'
+import { globalStyles } from '@/styles/global'
+import 'react-toastify/dist/ReactToastify.css'
 
-globalStyles();
-export default function App({ Component, pageProps }: AppProps) {
+globalStyles()
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   return (
-    <>
+    <SessionProvider session={session}>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -20,6 +24,6 @@ export default function App({ Component, pageProps }: AppProps) {
         theme="colored"
       />
       <Component {...pageProps} />
-    </>
-  );
+    </SessionProvider>
+  )
 }
