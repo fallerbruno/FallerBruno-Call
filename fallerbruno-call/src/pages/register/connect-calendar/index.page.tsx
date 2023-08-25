@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
 import { useEffect } from 'react'
 
-export default function Register() {
+export default function ConnectCalendar() {
   const session = useSession()
   const router = useRouter()
 
@@ -15,14 +15,22 @@ export default function Register() {
   const isSignedIn = session.status === 'authenticated'
 
   async function handleConnectCalendar() {
+    // signIn é um método do next-auth que permite fazer login com um provider
+    // rescrevemos o signIn para se adaptar ao nosso projeto
+    // api auth [...nextauth].api.ts tem mais detalhes
+    // lib auth/prisma-adapter.ts tem mais detalhes
     await signIn('google')
   }
-
   useEffect(() => {
     if (hasAuthError) {
       toast.error('Não foi possível conectar com o Google Calendar')
     }
-  }, [hasAuthError])
+    if (isSignedIn) {
+      toast.success(
+        'Conectado com sucesso, agora você pode prosseguir para o próximo passo',
+      )
+    }
+  }, [hasAuthError, isSignedIn])
 
   return (
     <Container>

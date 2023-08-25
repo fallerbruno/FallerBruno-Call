@@ -87,3 +87,15 @@ PARA SECRET DO NEXT openssl rand -base64 32
 A URL DE CALL BACK
 endereço da aplicacao/api/auth/callback/provider
 http://localhost:3000/api/auth/callback/google
+
+## NextAuth usando Cookies
+
+Necessita mandar para nosso novo adapter os cookies
+como para acessar os cookies temos que acessar usando o req e res
+sendo req para acessar o cookie e o
+res para fazer a mutabilidade do mesmo
+
+a api do google nao retorna um avatar_url
+então podemos definir a propriedade profile e acessar e retornar os dados como preferir
+ali dentro ainda temos mais opções a serem exploras.
+

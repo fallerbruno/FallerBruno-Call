@@ -10,6 +10,9 @@ export default async function handler(
     return res.status(405).end()
   }
 
+  // cookies: req acessar o cookie
+  // cookies: res para modificar o cookie
+
   const { name, username } = req.body
 
   const userAlreadyExists = await prisma.user.findUnique({
