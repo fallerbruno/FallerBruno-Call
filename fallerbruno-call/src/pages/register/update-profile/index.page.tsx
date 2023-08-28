@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   Heading,
   MultiStep,
@@ -15,6 +16,10 @@ import { useSession } from 'next-auth/react'
 import { GetServerSideProps } from 'next'
 import { buildNextAuthOptions } from '@/pages/api/auth/[...nextauth].api'
 import { getServerSession } from 'next-auth'
+import { api } from '@/lib/axios'
+import { toast } from 'react-toastify'
+import { AxiosError } from 'axios'
+import { useRouter } from 'next/router'
 
 const updateProfileSchema = z.object({
   bio: z.string(),
@@ -22,7 +27,7 @@ const updateProfileSchema = z.object({
 
 type updateProfileData = z.infer<typeof updateProfileSchema>
 
-export default function Register() {
+export default function UpdateProfile() {
   const {
     register,
     handleSubmit,
@@ -32,10 +37,26 @@ export default function Register() {
   })
 
   const session = useSession()
-  console.log(session)
+
+  const navigate = useRouter()
 
   async function handleUpdateProfile(data: updateProfileData) {
-    console.log(data)
+    try {
+      const response = await api.put('/users/update-profile', {
+        bio: data.bio,
+      })
+
+      console.log(response)
+
+      toast.success(response.data.message)
+
+      await navigate.push(`schedule/${session?.data?.user.username}`)
+    } catch (error) {
+      console.log(error)
+      if (error instanceof AxiosError && error?.response?.data?.message) {
+        toast.error(error.response.data.message)
+      }
+    }
   }
 
   return (
@@ -51,6 +72,7 @@ export default function Register() {
       <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
         <label>
           <Text size="sm">Foto de Perfil</Text>
+          <Avatar src={session.data?.user.avatar_url} alt="Foto do usuário" />
         </label>
 
         <label>

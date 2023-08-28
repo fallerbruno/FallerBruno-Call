@@ -32,6 +32,10 @@ export default function ConnectCalendar() {
     }
   }, [hasAuthError, isSignedIn])
 
+  function handleNextSetp() {
+    router.push('/register/time-intervals')
+  }
+
   return (
     <Container>
       <Header>
@@ -66,7 +70,7 @@ export default function ConnectCalendar() {
           </AuthError>
         )}
 
-        <Button type="submit" disabled={!isSignedIn}>
+        <Button type="submit" disabled={!isSignedIn} onClick={handleNextSetp}>
           Próximo passo
           <ArrowRight />
         </Button>

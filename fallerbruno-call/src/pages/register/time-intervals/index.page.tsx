@@ -22,6 +22,9 @@ import { getWeekDays } from '@/utils/getWeekDays'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { convertTimeStringToMinutes } from '@/utils/convert-time-string-to-minutes'
 import { api } from '@/lib/axios'
+import { useRouter } from 'next/router'
+import { toast } from 'react-toastify'
+import { AxiosError } from 'axios'
 
 /*  entendo melhor o zod
 validamos as propriedades como estamos acostumados, mas o zod nos permite fazer mais coisas
@@ -102,6 +105,8 @@ export default function TimeIntervals() {
     },
   })
 
+  const navigator = useRouter()
+
   // o useFieldArray é um hook que permite manipular um array de inputs
   const { fields } = useFieldArray({
     control,
@@ -115,7 +120,17 @@ export default function TimeIntervals() {
   const weekDays = getWeekDays()
 
   async function handleSetTimeIntervals(data: TimeIntervalsFormOutput) {
-    await api.post('/users/time-intervals', data)
+    try {
+      const response = await api.post('/users/time-intervals', data)
+
+      toast.success(response.data.message)
+
+      navigator.push('/register/update-profile')
+    } catch (error) {
+      if (error instanceof AxiosError && error?.response?.data?.message) {
+        toast.error(error.response.data.message)
+      }
+    }
   }
 
   return (

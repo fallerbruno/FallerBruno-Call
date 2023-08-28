@@ -31,8 +31,25 @@ export default async function handler(
     return res.status(401).end()
   }
 
+  // deletar todos os intervalos do usuário
+
+  // const intervalsAlreadyExists = await prisma.userTimeInterval.count({
+  //   where: {
+  //     id: session?.user.id,
+  //   },
+  // })
+
+  // if (intervalsAlreadyExists.length > 0) {
+  //   intervalsAlreadyExists.map(async (interval) => {
+  //     await prisma.userTimeInterval.delete({
+  //       where: {
+  //         id: interval.id,
+  //       },
+  //     })
+  //   })
+  // }
+
   const { intervals } = timeIntervalsBodySchema.parse(req.body)
-  console.log(intervals)
   // correto seria rodar com createMany, mas não está funcionando no sqlite, para outros bancos é suportado
   // await prisma.userTimeInterval.createMany({})
 
@@ -53,5 +70,5 @@ export default async function handler(
     sempre retornar dados para querys
   */
 
-  return res.status(201).end()
+  return res.status(201).json({ message: 'Horários adicionados com sucesso' })
 }
