@@ -1,3 +1,4 @@
+import '../lib/dayjs'
 import type { AppProps } from 'next/app'
 import { ToastContainer } from 'react-toastify'
 import { SessionProvider } from 'next-auth/react'

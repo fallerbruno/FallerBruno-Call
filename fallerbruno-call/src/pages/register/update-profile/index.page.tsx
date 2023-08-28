@@ -50,7 +50,7 @@ export default function UpdateProfile() {
 
       toast.success(response.data.message)
 
-      await navigate.push(`schedule/${session?.data?.user.username}`)
+      await navigate.replace(`/schedule/${session?.data?.user.username}`)
     } catch (error) {
       console.log(error)
       if (error instanceof AxiosError && error?.response?.data?.message) {
