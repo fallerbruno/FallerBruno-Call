@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { NextApiRequest, NextApiResponse } from 'next'
 import dayjs from 'dayjs'
+import { getGoogleOauthToken } from '@/lib/google'
+import { google } from 'googleapis'
 
 export default async function handler(
   req: NextApiRequest,
@@ -62,7 +64,7 @@ export default async function handler(
     return res.status(400).json({ message: 'Invalid date' })
   }
 
-  await prisma.scheduling.create({
+  const scheduling = await prisma.scheduling.create({
     data: {
       name,
       email,
@@ -72,5 +74,34 @@ export default async function handler(
     },
   })
 
-  return res.status(201).json({ message: 'horario marcado com sucesso' })
+  const calendar = google.calendar({
+    version: 'v3',
+    auth: await getGoogleOauthToken(user.id),
+  })
+
+  await calendar.events.insert({
+    calendarId: 'primary',
+    conferenceDataVersion: 1,
+    requestBody: {
+      summary: `Fallerbruno call ${name}`,
+      description: observations,
+      start: {
+        dateTime: schedulingDate.format(),
+      },
+      end: {
+        dateTime: schedulingDate.add(30, 'minute').format(),
+      },
+      attendees: [{ email, displayName: name }],
+      conferenceData: {
+        createRequest: {
+          requestId: scheduling.id,
+          conferenceSolutionKey: {
+            type: 'hangoutsMeet',
+          },
+        },
+      },
+    },
+  })
+
+  return res.status(201).json({ message: 'Horário marcado com sucesso' })
 }
