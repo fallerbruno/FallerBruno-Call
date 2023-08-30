@@ -3,7 +3,7 @@
 ## LIBS
 
 NODEJS, NEXTJS, TYPESCRIPT, REACT, LINT, FALLERBRUNOUI, PHOSPHOR-REACT, TOASTIFY, HOOKFORM, ZOD, PRISMA, AXIOS, NOOKIES,
-PROTOCOLO OAUTH, NEXTAUTH, @tanstack/react-query, DayJs,
+PROTOCOLO OAUTH, NEXTAUTH, @tanstack/react-query, DayJs, GOOGLE API,
 
 OAUTH para EXPRESS Passport
 MAGIC LINK
@@ -113,3 +113,15 @@ docker start mysql
 
 Comando utilizado para parar o container:
 docker stop mysql
+
+# NEXT SEO
+
+# SATORI
+
+# PLANET SCALE
+npx prisma db push
+
+# NEON SCALE
+
+# AWS AURORA
+
