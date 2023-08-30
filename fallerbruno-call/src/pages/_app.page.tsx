@@ -6,6 +6,7 @@ import { globalStyles } from '@/styles/global'
 import 'react-toastify/dist/ReactToastify.css'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from '@/lib/react-query'
+import { DefaultSeo } from 'next-seo'
 
 globalStyles()
 export default function App({
@@ -15,6 +16,14 @@ export default function App({
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
+        <DefaultSeo
+          openGraph={{
+            type: 'website',
+            locale: 'pt_BR',
+            url: 'https://www.fallerbruno.call.com.br',
+            siteName: 'Faller Bruno Call',
+          }}
+        />
         <ToastContainer
           position="top-right"
           autoClose={2000}

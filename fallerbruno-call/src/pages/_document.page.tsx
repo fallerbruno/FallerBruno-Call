@@ -1,5 +1,5 @@
-import { getCssText } from "@faller-bruno-ui/react";
-import { Head, Html, Main, NextScript } from "next/document";
+import { getCssText } from '@faller-bruno-ui/react'
+import { Head, Html, Main, NextScript } from 'next/document'
 export default function Document() {
   return (
     <Html>
@@ -25,5 +25,5 @@ export default function Document() {
         <NextScript />
       </body>
     </Html>
-  );
+  )
 }

@@ -34,7 +34,7 @@ interface CalendarProps {
   onDateSelected: (date: Date) => void
 }
 
-export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
+export function Calendar({ onDateSelected }: CalendarProps) {
   const shortWeekDays = getWeekDays({ short: true })
 
   const router = useRouter()
