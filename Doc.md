@@ -99,3 +99,17 @@ a api do google nao retorna um avatar_url
 então podemos definir a propriedade profile e acessar e retornar os dados como preferir
 ali dentro ainda temos mais opções a serem exploras.
 
+## DOCKER
+
+# cria o banco mysql com nome mysql definindo a senha do root docker em desenvolvimento e expondo a porta para a porta host
+
+docker run --name mysql -e MYSQL_ROOT_PASSWORD=docker -p 3306:3306 mysql:latest
+
+Comando utilizado para rodar o Docker:
+docker run --name mysql -e MYSQL_ROOT_PASSWORD=docker -p 3306:3306 mysql:latest
+
+Comando utilizado para iniciar o container
+docker start mysql
+
+Comando utilizado para parar o container:
+docker stop mysql

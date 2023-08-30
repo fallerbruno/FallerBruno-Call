@@ -10,6 +10,14 @@ import {
 import { getWeekDays } from '@/utils/getWeekDays'
 import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useRouter } from 'next/router'
+import { api } from '@/lib/axios'
+
+interface BlockedDates {
+  blockedWeekDays: number[]
+  blockedDates: number[]
+}
 
 interface CalendarWeek {
   week: number
@@ -29,16 +37,35 @@ interface CalendarProps {
 export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
   const shortWeekDays = getWeekDays({ short: true })
 
+  const router = useRouter()
+  const username = String(router.query.username)
+
   const [currentDate, setCurrentDate] = useState(() => {
     return dayjs().set('date', 1)
   })
 
   const currentMonth = currentDate.format('MMMM')
   const currentYear = currentDate.format('YYYY')
-
   const firstWeekDay = currentDate.get('day')
 
+  const { data: blockedDates } = useQuery<BlockedDates>(
+    ['blocked-dates', currentDate.get('year'), currentDate.get('month')],
+    async () => {
+      const response = await api.get(`/users/${username}/blocked-dates`, {
+        params: {
+          year: currentDate.get('year'),
+          month: currentDate.get('month') + 1,
+        },
+      })
+
+      return response.data
+    },
+  )
+
   const calendarWeeks = useMemo(() => {
+    if (!blockedDates) {
+      return []
+    }
     // pega os dias do mês atual
     const daysInMonth = Array.from({
       length: currentDate.daysInMonth(),
@@ -69,7 +96,13 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
       }),
 
       ...daysInMonth.map((date) => {
-        return { date, disabled: date.endOf('day').isBefore(dayjs()) }
+        return {
+          date,
+          disabled:
+            date.endOf('day').isBefore(dayjs()) ||
+            blockedDates?.blockedWeekDays.includes(date.get('day')) ||
+            blockedDates.blockedDates.includes(date.get('date')),
+        }
       }),
 
       ...nextMonthDays.map((date) => {
@@ -102,7 +135,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
 
     // retorna o array de semanas
     return calendarWeeks
-  }, [currentDate, firstWeekDay])
+  }, [currentDate, firstWeekDay, blockedDates])
 
   function handlePreviousMonth() {
     const previousMonthDate = currentDate.subtract(1, 'month')

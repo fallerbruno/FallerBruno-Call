@@ -82,9 +82,17 @@ export default async function handler(
   })
 
   const availableTimes = arrayOfHours.filter((time) => {
-    return !blockedTimes.some(
-      (blockedTime) => blockedTime.date.getHours() === time,
+    const isTimeBlocked = !blockedTimes.some(
+      (blockedTime) =>
+        blockedTime.date.getHours() === time ||
+        blockedTime.date.getHours() + 0.5 === time,
     )
+
+    const isTimeInPast =
+      referenceDate.set('hour', time).isBefore(new Date()) &&
+      referenceDate.set('minutes', time).isBefore(new Date())
+
+    return isTimeBlocked && !isTimeInPast
   })
 
   return res.status(200).json({ availableTimes, arrayOfHours })
