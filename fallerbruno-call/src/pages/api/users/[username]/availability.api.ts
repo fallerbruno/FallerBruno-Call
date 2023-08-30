@@ -82,10 +82,10 @@ export default async function handler(
   })
 
   const availableTimes = arrayOfHours.filter((time) => {
-    const isTimeBlocked = !blockedTimes.some(
-      (blockedTime) =>
-        blockedTime.date.getHours() === time ||
-        blockedTime.date.getHours() + 0.5 === time,
+    const isTimeBlocked = !blockedTimes.some((blockedTime) =>
+      blockedTime.date.getMinutes() === 0
+        ? blockedTime.date.getHours() === time
+        : blockedTime.date.getHours() + 0.5 === time,
     )
 
     const isTimeInPast =

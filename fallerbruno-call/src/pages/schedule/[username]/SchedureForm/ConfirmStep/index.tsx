@@ -6,6 +6,10 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
+import dayjs from 'dayjs'
+import { api } from '@/lib/axios'
+import { useRouter } from 'next/router'
+import { AxiosError } from 'axios'
 
 const confirmFormSchema = z.object({
   name: z.string().min(3, { message: 'Nome completo é obrigatório' }),
@@ -15,7 +19,12 @@ const confirmFormSchema = z.object({
 
 type ConfirmFormValues = z.infer<typeof confirmFormSchema>
 
-export function ConfirmStep() {
+interface ConfirmStepProps {
+  schedulingDate: Date
+  onEndEvent: () => void
+}
+
+export function ConfirmStep({ schedulingDate, onEndEvent }: ConfirmStepProps) {
   const {
     register,
     handleSubmit,
@@ -23,6 +32,33 @@ export function ConfirmStep() {
   } = useForm<ConfirmFormValues>({
     resolver: zodResolver(confirmFormSchema),
   })
+
+  const describeDate = dayjs(schedulingDate).format('DD[ de ]MMMM[ de ]YYYY')
+  const descriveTime = dayjs(schedulingDate).format('HH:mm[h]')
+
+  const router = useRouter()
+  const username = String(router.query.username)
+
+  async function handleConfirmScheduling(data: ConfirmFormValues) {
+    const { name, email, observations } = data
+    try {
+      const response = await api.post(`/users/${username}/schedule`, {
+        name,
+        email,
+        observations,
+        date: schedulingDate,
+      })
+
+      if (response.status === 201) {
+        toast.success(response.data.message)
+        onEndEvent()
+      }
+    } catch (error) {
+      if (error instanceof AxiosError && error?.response?.data?.message) {
+        toast.error(error.response.data.message)
+      }
+    }
+  }
 
   useEffect(() => {
     if (errors.name) {
@@ -34,20 +70,16 @@ export function ConfirmStep() {
     }
   }, [errors.email, errors.name])
 
-  function handleConfirmScheduling(data: ConfirmFormValues) {
-    console.log(data)
-  }
-
   return (
     <ConfirmForm as="form" onSubmit={handleSubmit(handleConfirmScheduling)}>
       <FormHeader>
         <Text>
           <CalendarBlank />
-          22 de Setembro de 2022
+          {describeDate}
         </Text>
         <Text>
           <Clock />
-          18:00h
+          {descriveTime}
         </Text>
       </FormHeader>
 
@@ -75,10 +107,14 @@ export function ConfirmStep() {
       </label>
 
       <FormActions>
-        <Button type="button" variant="tertiary">
+        <Button type="button" variant="tertiary" onClick={onEndEvent}>
           Cancelar
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          onClick={handleConfirmScheduling}
+        >
           Confirmar
         </Button>
       </FormActions>
